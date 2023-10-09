@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RadQuiz - Questões de Radiologia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+    /* Reset default margin and padding on all elements */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom, #000, #333); /* Darker gradient */
+        color: #FFF;
+        line-height: 1.6;
+    }
+
+    header, footer {
+        background: rgba(0, 0, 0, 0.8); /* Semi-transparent black background for header and footer */
+        padding: 1rem;
+    }
+
+    /* Improved typography for headings */
+    h1, h2, h3, h4, h5, h6 {
+        color: #FF4500;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    /* Container for better content alignment */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    /* Buttons */
+    .btn-primary {
+        background-color: #FF4500;
+        color: #FFF;
+        border: none;
+        border-radius: 25px;
+        padding: 10px 20px;
+        cursor: pointer; /* Add pointer cursor on hover */
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #000;
+        transform: scale(1.1);
+    }
+
+    /* Form elements */
+    .form-input, .select-topic {
+        border: 2px solid #FF4500;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 15px;
+        width: 100%;
+        color: #333; /* Darkened text color for better readability */
+        transition: border-color 0.3s;
+    }
+
+    .form-input:focus, .select-topic:focus {
+        border-color: #000;
+    }
+
+    /* Animation */
+    .animate__animated {
+        --animate-duration: 1s;
+    }
+
+    /* Footer text */
+    footer p {
+        text-align: center;
+        color: #999; /* Lighter gray text color */
+        margin-top: 1rem;
+    }
+</style>
+</head>
+<body class="bg-black text-orange-500 font-sans animate__animated animate__fadeIn">
+    <header class="bg-opacity-90 p-4 animate__animated animate__fadeInDown">
+        <nav class="container mx-auto flex justify-between items-center">
+            <a href="#" class="text-white text-2xl font-bold">RadQuiz - Questões de Radiologia</a>
+        </nav>
+    </header>
+    <section class="py-10 md:py-20 bg-opacity-90 animate__animated animate__fadeIn">
+        <div class="container mx-auto text-center">
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-semibold">Bem-vindo ao RadQuiz</h1>
+            <form action="/" method="post" class="mt-8 space-y-4 max-w-lg mx-auto p-4 border border-gray-300 rounded-lg shadow-md animate__animated animate__zoomIn">
+                <div class="form-group animate__animated animate__fadeIn">
+                    <label for="topic" class="text-white">Selecione o Tópico Principal:</label>
+                    <select class="select-topic" id="topic" name="topic">
+                        <option value="musculoskeletal">Musculoskeletal Imaging</option>
+                        <option value="neuroradiology">Neuroradiology</option>
+                        <option value="nuclearradiology">Nuclear Radiology</option>
+                        <option value="pediatricradiology">Pediatric Radiology</option>
+                        <option value="thoracicimaging">Thoracic Imaging</option>
+                        <option value="gastrointestinal">Gastrointestinal Imaging</option>
+                        <option value="genitourinary">Genitourinary Imaging</option>
+                        <option value="interventionalradiology">Interventional Radiology</option>
+                        <option value="breastimaging">Breast Imaging</option>
+                        <option value="cardiovascularimaging">Cardiovascular Imaging</option>
+                        <option value="ultrasound">Ultrasound</option>
+                    </select>
+                </div>
+                <div class="form-group animate__animated animate__fadeIn">
+                    <label for="subtopic" class="text-white">Selecione o Subtópico (se aplicável):</label>
+                    <select class="select-topic" id="subtopic" name="subtopic">
+                        <!-- Subtopics for selected topic will be displayed here -->
+                    </select>
+                </div>
+                <div class="form-group animate__animated animate__fadeIn">
+                    <label for="num_questions" class="text-white">Número de Questões (1-15):</label>
+                    <input type="number" class="form-input" id="num_questions" name="num_questions" min="1" max="15">
+                </div>
+                <button type="submit" class="btn-primary animate__animated animate__pulse infinite">Gerar Quiz</button>
+            </form>
+        </div>
+    </section>
+    <footer class="animate__animated animate__fadeInUp">
+        <div class="container mx-auto text-center">
+            <p>© 2023 RadQuiz - A plataforma de questões de Radiologia que usa a IA ao seu favor! Contato: natannpr@gmail.com</p>
+        </div>
+    </footer>
+
+    <script>
+        var subtopicOptions = {
+            musculoskeletal: [
+                "Bone tumors",
+                "Trauma",
+                "Infection",
+                "Congenital variants",
+                "Metabolic bone disorders",
+                "Arthritis",
+                "Orthopedic hardware"
+            ],
+            neuroradiology: [
+                "Brain",
+                "Head/Neck",
+                "Spine"
+            ],
+            nuclearradiology: [
+                "CNS",
+                "Cardiovascular",
+                "Pulmonary",
+                "GI",
+                "GU",
+                "Musculoskeletal",
+                "Endocrine",
+                "Infection/Inflammation",
+                "Neoplasms",
+                "Therapy/Theranostics",
+                "Technical/Quality"
+            ],
+            pediatricradiology: [
+                "Neuroradiology",
+                "Chest/Airway",
+                "Cardiovascular",
+                "GI",
+                "GU",
+                "Musculoskeletal",
+                "Multisystem disorders"
+            ],
+            thoracicimaging: [
+                "Anatomy",
+                "Pneumonia",
+                "Lung cancer",
+                "Other lung tumors",
+                "Lines/tubes",
+                "Trauma",
+                "Congenital lung disease",
+                "Interstitial lung disease",
+                "Inflammatory lung disease",
+                "Airways/bronchiectasis",
+                "Systemic lung disease",
+                "Pleura/chest wall",
+                "Mediastinal masses",
+                "Atelectasis",
+                "Pulmonary arteries"
+            ],
+            gastrointestinal: [
+                "Pharynx/esophagus",
+                "Stomach",
+                "Small bowel",
+                "Colon",
+                "Pancreas",
+                "Liver",
+                "Spleen",
+                "Biliary",
+                "Peritoneum",
+                "Multisystem disorders"
+            ],
+            genitourinary: [
+                "Adrenal",
+                "Female pelvis",
+                "Male pelvis",
+                "Kidney",
+                "Bladder",
+                "Retroperitoneum"
+            ],
+            interventionalradiology: [
+                "Image-guided interventions",
+                "Vascular imaging",
+                "Arterial interventions",
+                "Venous interventions",
+                "Nonvascular interventions"
+            ],
+            breastimaging: [
+                "Screening",
+                "Regulations/Standards",
+                "Technique",
+                "Pathology",
+                "Symptomatic findings",
+                "Inflammatory disorders",
+                "Calcifications",
+                "Masses",
+                "Architectural distortion",
+                "Asymmetry",
+                "Lymph nodes",
+                "Male breast",
+                "Post-operative breast",
+                "Anatomy",
+                "Breast MRI",
+                "Interventions"
+            ],
+            cardiovascularimaging: [],
+            ultrasound: [
+                "Breast",
+                "Cardiac",
+                "GI",
+                "GU",
+                "Head/Neck",
+                "OB",
+                "Vascular",
+                "Scrotum"
+            ]
+        };
+
+        var topicDropdown = document.getElementById("topic");
+        var subtopicDropdown = document.getElementById("subtopic");
+
+        // Function to populate subtopics based on the selected topic
+        function populateSubtopics() {
+            var selectedTopic = topicDropdown.value;
+            var subtopics = subtopicOptions[selectedTopic] || [];
+
+            // Clear previous subtopics
+            subtopicDropdown.innerHTML = "";
+
+            // Create and append option elements for subtopics
+            subtopics.forEach(function (subtopic) {
+                var option = document.createElement("option");
+                option.value = subtopic.toLowerCase().replace(/\s+/g, "");
+                option.text = subtopic;
+                subtopicDropdown.appendChild(option);
+            });
+
+            // Show the subtopic dropdown if there are subtopics, hide it otherwise
+            subtopicDropdown.style.display = subtopics.length > 0 ? "block" : "none";
+        }
+
+        // Event listener for topic dropdown change
+        topicDropdown.addEventListener("change", populateSubtopics);
+
+        // Initialize the subtopic dropdown on page load
+        populateSubtopics();
+    </script>
+</body>
+</html>
